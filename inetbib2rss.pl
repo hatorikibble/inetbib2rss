@@ -26,32 +26,42 @@ my $date    = undef;
 my $url     = undef;
 my $subject = undef;
 my $author  = undef;
+my $message = undef;
+my $desc = undef;
 
 my $DateParser = DateTime::Format::Strptime->new(
-    pattern  => '%d. %B %Y',
+    pattern  => '%a, %e %b %Y %H:%M:%S %z (%Z)',
     locale   => 'en',
     on_error => 'croak',
 );
 
 foreach my $l ( split( '\n', $content ) ) {
-
-    #print $l;
-    if ( $l =~ /<LI><STRONG>(\d+\. \w+ \d{4})<\/STRONG><\/LI>/ ) {
-        $date = $DateParser->parse_datetime($1);
-    }
-    elsif ( $l =~
+    if ( $l =~
 /<LI><strong><a name="\d+" href="(.*?)">(.*?)<\/a><\/strong>, (.*?)<\/LI>/
       )
     {
         $url     = $InetBibArchiv . $1;
-        $subject = $2;
+	$subject = $2;
         $author  = $3;
+	$message = get($url);
+	if ($message =~ /Body-of-Message-->(.*?)<!--X-Body-of-Message/s){
+	    $desc = $1;
+	    $desc =~ s/<\/*pre.*?>//g;
+	}else{
+	    $desc = undef;
+	}
+	if ($message =~ /X-Date: (.+?) --/){
+	    $date = $DateParser->parse_datetime($1);
+	}else{
+	    $date = undef;
+	}	
         $Rss->add_item(
             title => $subject,
             link  => $url,
+	    description => $desc,
             dc    => {
                 creator => $author,
-                date    => DateTime::Format::W3CDTF->format_date($date)
+                date    => DateTime::Format::W3CDTF->format_datetime($date)
             }
         );
     }
