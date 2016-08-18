@@ -12,7 +12,6 @@ use LWP::Simple;
 use XML::RSS;
 
 my $InetBibArchiv = "http://www.inetbib.de/listenarchiv/";
-my $RssOutputFile = "feed.xml";
 my $Rss           = XML::RSS->new( version => '1.0' );
 
 $Rss->channel(
@@ -27,7 +26,7 @@ my $url     = undef;
 my $subject = undef;
 my $author  = undef;
 my $message = undef;
-my $desc = undef;
+my $desc    = undef;
 
 my $DateParser = DateTime::Format::Strptime->new(
     pattern  => '%a, %e %b %Y %H:%M:%S %z (%Z)',
@@ -41,25 +40,26 @@ foreach my $l ( split( '\n', $content ) ) {
       )
     {
         $url     = $InetBibArchiv . $1;
-	$subject = $2;
+        $subject = $2;
         $author  = $3;
-	$message = get($url);
-	if ($message =~ /Body-of-Message-->(.*?)<!--X-Body-of-Message/s){
-	    $desc = $1;
-	    $desc =~ s/<\/*pre.*?>//g;
-	}else{
-	    $desc = undef;
-	}
-	if ($message =~ /X-Date: (.+?) --/){
-	    $date = $DateParser->parse_datetime($1);
-	}else{
-	    $date = undef;
-	}	
+        $message = get($url);
+        if ( $message =~ /Body-of-Message-->(.*?)<!--X-Body-of-Message/s ) {
+            $desc = $1;
+        }
+        else {
+            $desc = undef;
+        }
+        if ( $message =~ /X-Date: (.+?) --/ ) {
+            $date = $DateParser->parse_datetime($1);
+        }
+        else {
+            $date = undef;
+        }
         $Rss->add_item(
-            title => $subject,
-            link  => $url,
-	    description => $desc,
-            dc    => {
+            title       => $subject,
+            link        => $url,
+            description => $desc,
+            dc          => {
                 creator => $author,
                 date    => DateTime::Format::W3CDTF->format_datetime($date)
             }
