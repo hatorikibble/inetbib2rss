@@ -151,6 +151,8 @@ createRssFile();
 $log->infof( "Ended at '%s'...", DateTime->now(time_zone=>'Europe/Berlin')->strftime("%d.%m.%Y %H:%M:%S") );
 __END__
 
+=encoding utf8
+
 =head1 NAME
 
 inetbib2rss.pl - RSS Feed aus dem InetBib Mailarchiv erzeugen
