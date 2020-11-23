@@ -54,7 +54,7 @@ sub createRssFile {
         $Rss->channel( title       => 'InetBib Listenarchiv',
                        description =>
                            sprintf( 'Die Mailingliste als RSS-Feed (Stand: %s)',
-                                 DateTime->now->strftime("%d.%m.%Y %H:%M:%S") ),
+                                 DateTime->now(time_zone=>'Europe/Berlin')->strftime("%d.%m.%Y %H:%M:%S") ),
                        link => $InetBibArchiv
         );
         $content = $response->{content};
@@ -138,7 +138,7 @@ sub die_with_error {
 ######
 
 $log->infof( "Started at '%s'...",
-             DateTime->now->strftime("%d.%m.%Y %H:%M:%S") );
+             DateTime->now(time_zone=>'Europe/Berlin')->strftime("%d.%m.%Y %H:%M:%S") );
 GetOptions( 'help|?' => \$help, "outfile=s" => \$outfile, "limit=i" => \$limit )
     or pod2usage(2);
 pod2usage(1) if $help;
@@ -148,7 +148,7 @@ die_with_error("Kein Parameter 'outfile' uebergeben!")
 $limit = 50 unless ( defined($limit) );
 
 createRssFile();
-$log->infof( "Ended at '%s'...", DateTime->now->strftime("%d.%m.%Y %H:%M:%S") );
+$log->infof( "Ended at '%s'...", DateTime->now(time_zone=>'Europe/Berlin')->strftime("%d.%m.%Y %H:%M:%S") );
 __END__
 
 =head1 NAME
