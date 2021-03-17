@@ -119,8 +119,8 @@ sub createRssFile {
     else {
         $error
             = sprintf(
-                     "ERROR: Konnte URL $InetBibArchiv nicht abrufen: %s (%s)",
-                     $InetBibArchiv, $response->{reason}, $response->{status} );
+                     "ERROR: Konnte URL $InetBibArchiv nicht abrufen: %s (%s: %s)",
+                     $InetBibArchiv, $response->{status}, $response->{reason} );
         $log->error($error);
         die $error;
     }
